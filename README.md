@@ -7,7 +7,7 @@ This projects is initiated by [DonnuTs69](https://github.com/DonnuTs69) also col
 List of tech stack we using :
 - [React.js](https://reactjs.org/)
 - [Node.js](https://nodejs.org/en/)
-- [Express.js(https://expressjs.com/)
+- [Express.js](https://expressjs.com/)
 - [Material-UI](https://mui.com/)
 
 # What's Next
