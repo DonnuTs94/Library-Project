@@ -20,5 +20,8 @@
   "version": "1.0.0",
   "workspaces": [
     "project/*"
-  ]
+  ],
+  "dependencies": {
+    "@firebase/auth": "^0.21.3"
+  }
 }
