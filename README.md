@@ -1,7 +1,5 @@
 # Library-Website
-This projects is initiated by [DonnuTs69](https://github.com/DonnuTs69) also collaborated with 
-- [RGS](https://github.com/nuradlifathan)
-- [Danar](https://github.com/danarbastian7)
+This portfolio project aims to improve developer skills and no commercial gain is taken by the developer on this project .
 
 ## Tech Stack
 List of tech stack we using :
@@ -11,4 +9,4 @@ List of tech stack we using :
 - [Material-UI](https://mui.com/)
 
 ## What's Next
-Refactor using Next.js and NextAuth
+For future updates we're going to Refactor the project using Next.js and NextAuth .
