@@ -8,14 +8,16 @@ import {
   Typography,
 } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-import { Route, Router } from "react-router-dom"
+import { Route, Routes } from "react-router-dom"
+
+import PaginationAdmin from "../src/components/paginationAllBookAdmin/pagination.admin.component"
 
 function App() {
   return (
     <>
-      <Container component="main" maxWidth="xs" border="1px solid black">
+      <Container>
         <CssBaseline />
-        <Box
+        {/* <Box
           sx={{
             mt: 8,
             display: "flex",
@@ -23,9 +25,10 @@ function App() {
             alignItems: "center",
           }}
           border="1px solid black"
-        >
-          <Typography variant="h5">Sign Up</Typography>
-        </Box>
+        ></Box> */}
+        <Routes>
+          <Route path="/pagination" element={<PaginationAdmin />} />
+        </Routes>
       </Container>
     </>
   )
