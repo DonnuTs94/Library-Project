@@ -5,7 +5,7 @@ module.exports = {
   getAllAdminBooks: async (req, res) => {
     try {
       // menggunakan parseInt karena limit & omset hanya menerima parameter integer
-      let limit = parseInt(req.query.record) || 3
+      let limit = parseInt(req.query.record) || 5
       let page = parseInt(req.query.page) || 1
 
       let start = 0 + (page - 1) * limit
@@ -46,6 +46,28 @@ module.exports = {
         data: adminBooks.rows,
         pagination,
       })
+
+      // const default_page = 1
+      // const default_limit = 3
+
+      // const page = parseInt(req.query.page) || default_page
+      // const limit = parseInt(req.query.limit) || default_limit
+      // const offset = (page - 1) * limit
+
+      // const adminBooks = await findAllAdminBooks.findAndCountAll({
+      //   include: [{ model: db.Book_Picture }],
+      //   limit,
+      //   offset,
+      // })
+
+      // const pageCount = Math.ceil(adminBooks.count / limit)
+
+      // return res.status(200).json({
+      //   data: adminBooks.rows,
+      //   page,
+      //   pageCount,
+      //   total: adminBooks.count,
+      // })
     } catch (err) {
       console.log(err)
       return res.status(500).json({
