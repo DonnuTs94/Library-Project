@@ -10,7 +10,7 @@ import {
 import { ThemeProvider } from "@mui/material/styles"
 import { Route, Routes } from "react-router-dom"
 
-import PaginationAdmin from "../src/components/paginationAllBookAdmin/pagination.admin.component"
+import PaginationAdmin from "../src/components/admin/paginationAllBookAdmin/pagination.admin.component"
 
 function App() {
   return (

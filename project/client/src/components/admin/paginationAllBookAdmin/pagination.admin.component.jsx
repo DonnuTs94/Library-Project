@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { API } from "../../api"
+import { API } from "../../../api"
 import {
   CardMedia,
   IconButton,
@@ -8,47 +8,58 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
 } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import { useSearchParams } from "react-router-dom"
 import Carousel from "react-material-ui-carousel"
+import TableHeadList from "../tableHeadList/TableHeadList.component"
 
 const PaginationAdmin = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [books, setBooks] = useState([])
+  const [order, setOrder] = useState(searchParams.get("order") || "asc")
+  const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || "")
   const [showTruncate, setShowTruncate] = useState(true)
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get("page")) || 0
   )
-
   const [rowPerPage, setRowPerPage] = useState(
     parseInt(searchParams.get("row")) || 5
   )
 
-  const columns = [
-    { id: "title", label: "Title", minWidth: 170 },
-    { id: "author", label: "Author", minWidth: 170, align: "center" },
-    { id: "category", label: "Category", minWidth: 170, align: "center" },
-    { id: "description", label: "Description", minWidth: 170, align: "center" },
-    { id: "book images", label: "Book Images", minWidth: 170, align: "center" },
-    { id: "edit", label: "Edit", minWidth: 170, align: "center" },
-    { id: "delete", label: "Delete", minWidth: 170, align: "center" },
-  ]
-
   const truncate = (input) =>
-    input.length > 40 ? `${input.substring(0, 40)} ...` : input
+    input.length > 40 ? `${input.substring(0, 40)}` : input
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowPerPage(+event.target.value)
-    setCurrentPage(0)
+  const descComparator = (a, b, orderBy) => {
+    if (b[orderBy] < a[orderBy]) {
+      return -1
+    }
+    if (b[orderBy] > a[orderBy]) {
+      return 1
+    }
+    return 0
   }
 
-  const handlePage = (event, newPage) => {
-    setCurrentPage(newPage)
+  const getComparator = (order, orderBy) => {
+    return order === "desc"
+      ? (a, b) => descComparator(a, b, orderBy)
+      : (a, b) => -descComparator(a, b, orderBy)
+  }
+
+  const stableSort = (array, comparator) => {
+    const stabilizedThis = array.map((el, index) => [el, index])
+    stabilizedThis.sort((a, b) => {
+      const order = comparator(a[0], b[0])
+      if (order !== 0) {
+        return order
+      }
+      return a[1] - b[1]
+    })
+    return stabilizedThis.map((el) => el[0])
   }
 
   const foundAllBooks = async () => {
@@ -60,39 +71,47 @@ const PaginationAdmin = () => {
     }
   }
 
+  const handleRequestShort = (event, prop) => {
+    const isAsc = orderBy === prop && order === "asc"
+    setOrder(isAsc ? "desc" : "asc")
+    setOrderBy(prop)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowPerPage(+event.target.value)
+    setCurrentPage(0)
+  }
+
+  const handlePage = (event, newPage) => {
+    setCurrentPage(newPage)
+  }
+
   useEffect(() => {
     foundAllBooks()
   }, [])
 
   useEffect(() => {
-    setSearchParams({ page: currentPage, row: rowPerPage })
-  }, [currentPage, rowPerPage, setSearchParams])
+    setSearchParams({
+      page: currentPage,
+      row: rowPerPage,
+      order: order,
+      orderBy: orderBy,
+    })
+  }, [currentPage, rowPerPage, order, orderBy, setSearchParams])
 
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
         <TableContainer>
           <Table size="medium">
-            <TableHead>
-              <TableRow>
-                {columns.map((col) => (
-                  <TableCell
-                    key={col.id}
-                    align={col.align}
-                    style={{ minWidth: col.minWidth }}
-                    sx={{
-                      fontWeight: "bold",
-                      backgroundColor: "#39B5E0",
-                      color: "white",
-                    }}
-                  >
-                    {col.label}
-                  </TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
+            <TableHeadList
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestShort}
+              rowCount={books.length}
+            />
             <TableBody>
-              {books
+              {stableSort(books, getComparator(order, orderBy))
                 .slice(
                   currentPage * rowPerPage,
                   currentPage * rowPerPage + rowPerPage
@@ -114,9 +133,16 @@ const PaginationAdmin = () => {
                         {showTruncate
                           ? truncate(row.description)
                           : row.description}
+                        <Tooltip title={row.description}>
+                          <span style={{ cursor: "pointer" }}>...</span>
+                        </Tooltip>
                       </TableCell>
                       <TableCell>
-                        <Carousel autoPlay={false} animation="fade">
+                        <Carousel
+                          indicators={false}
+                          autoPlay={false}
+                          animation="fade"
+                        >
                           {row.Book_Pictures.map((val) => (
                             <CardMedia
                               component="img"
