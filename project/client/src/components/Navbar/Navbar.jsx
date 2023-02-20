@@ -16,7 +16,7 @@ import {
   Typography,
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
-import SearchBar from "../Home/SearchBar"
+import SearchBar from "./SearchBar"
 
 const pages = ["Products", "Pricing", "Blog"]
 const settings = ["Profile", "Account", "Dashboard", "Logout"]
