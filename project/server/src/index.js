@@ -3,11 +3,15 @@ const cors = require("cors")
 
 const db = require("../models")
 
+const admindBooks = require("../routes/admin-books.Route")
+
 const PORT = 8000
 const app = express()
 
-// app.use(cors())
+app.use(cors())
 app.use(express.json())
+
+app.use("/api/admin-books", admindBooks)
 
 app.listen(PORT, (err) => {
   if (err) {
