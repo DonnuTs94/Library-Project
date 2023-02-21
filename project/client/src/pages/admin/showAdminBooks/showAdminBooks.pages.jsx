@@ -16,9 +16,9 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import { useSearchParams } from "react-router-dom"
 import Carousel from "react-material-ui-carousel"
-import TableHeadList from "../tableHeadList/TableHeadList.component"
+import TableHeadList from "../../../components/admin/tableHeadList/TableHeadList.component"
 
-const PaginationAdmin = () => {
+const ShowAdminBooks = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [books, setBooks] = useState([])
   const [order, setOrder] = useState(searchParams.get("order") || "asc")
@@ -188,4 +188,4 @@ const PaginationAdmin = () => {
   )
 }
 
-export default PaginationAdmin
+export default ShowAdminBooks

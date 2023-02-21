@@ -8,9 +8,9 @@ import {
   Typography,
 } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-import { Route, Routes } from "react-router-dom"
-
-import PaginationAdmin from "../src/components/admin/paginationAllBookAdmin/pagination.admin.component"
+// import { Route, Routes } from "react-router-dom"
+// import ShowAdminBooks from "./pages/admin/showAdminBooks/showAdminBooks.pages"
+import LibraryRoutes from "./Routes"
 
 function App() {
   return (
@@ -26,9 +26,10 @@ function App() {
           }}
           border="1px solid black"
         ></Box> */}
-        <Routes>
-          <Route path="/pagination" element={<PaginationAdmin />} />
-        </Routes>
+        {/* <Routes>
+          <Route path="/admin-books" element={<ShowAdminBooks />} />
+        </Routes> */}
+        <LibraryRoutes />
       </Container>
     </>
   )

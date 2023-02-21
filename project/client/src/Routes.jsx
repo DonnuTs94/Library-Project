@@ -1,16 +1,14 @@
-import { Routes } from "react-router-dom"
-import Page1 from "./pages/Page1"
-import Page2 from "./pages/Page2"
+import { Routes, Route } from "react-router-dom"
+import ShowAdminBooks from "./pages/admin/showAdminBooks/showAdminBooks.pages"
 
-const Route = () => {
+const LibraryRoutes = () => {
   return (
     <>
       <Routes>
-        <Route path="/page1" element={<Page1 />} />
-        <Route path="/page2" element={<Page2 />} />
+        <Route path="/admin-books" element={<ShowAdminBooks />} />
       </Routes>
     </>
   )
 }
 
-export default Route
+export default LibraryRoutes
