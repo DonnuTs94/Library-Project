@@ -17,6 +17,7 @@ import {
 } from "@mui/material"
 import MenuIcon from "@mui/icons-material/Menu"
 import SearchBar from "./SearchBar"
+import { Link } from "react-router-dom"
 
 const pages = ["Products", "Pricing", "Blog"]
 const settings = ["Profile", "Account", "Dashboard", "Logout"]
@@ -50,7 +51,10 @@ const Navbar = () => {
   return (
     <AppBar
       position="static"
-      sx={{ backgroundColor: "white", paddingBottom: "10px" }}
+      sx={{
+        backgroundColor: "white",
+        paddingBottom: "10px",
+      }}
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -135,7 +139,7 @@ const Navbar = () => {
               <Tab label="cart" sx={{ color: "black" }} />
             </Tabs>
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, paddingLeft: "10px" }}>
             <IconButton
               sx={{ p: 0, position: "right" }}
               onClick={handleOpenNavMenu2}
@@ -150,11 +154,22 @@ const Navbar = () => {
               onClose={handleCloseNavMenu2}
               sx={{
                 display: { xs: "block", md: "block" },
+                fontFamily: "sans-serif",
+                textDecoration: "none",
               }}
               onClick={handleCloseNavMenu2}
             >
               <MenuItem>Edit Profile</MenuItem>
-              <MenuItem>Sign In/Out</MenuItem>
+              <Link to={"/signin"}>
+                <MenuItem
+                  sx={{
+                    fontFamily: "sans-serif",
+                    textDecoration: "none",
+                  }}
+                >
+                  Sign In/Out
+                </MenuItem>
+              </Link>
             </Menu>
           </Box>
         </Toolbar>

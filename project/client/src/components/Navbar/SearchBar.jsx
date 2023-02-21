@@ -18,6 +18,7 @@ const SearchBar = () => {
       marginLeft: theme.spacing(1),
       width: "auto",
     },
+    border: "2px solid black",
   }))
 
   const SearchIconWrapper = styled("div")(({ theme }) => ({

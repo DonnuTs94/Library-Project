@@ -64,64 +64,62 @@ const BooksPage = () => {
     },
   ]
   return (
-    <Box>
-      <Grid
-        container
-        spacing={{ xs: 2, md: 3 }}
-        columns={{ xs: 4, sm: 8, md: 12 }}
-        paddingTop="20px"
-        justifyContent={"center"}
-      >
-        {material.map((val) => (
-          <Grid item>
-            <Card
-              sx={{
-                width: 260,
-                borderRadius: "10px",
-              }}
-            >
-              <CardActionArea>
-                <CardMedia
-                  component={"img"}
-                  height="330"
-                  image={val.imageUrl}
-                  sx={{
-                    width: "100%",
-                    objectFit: "contain",
-                  }}
-                />
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h6"
-                    component={"div"}
-                    fontWeight="bold"
-                  >
-                    {val.title}
-                  </Typography>
-                  <Typography gutterBottom varian="h7">
-                    {val.author}
-                  </Typography>
-                  <Typography
-                    gutterBottom
-                    varian="h7"
-                    fontStyle={"italic"}
-                    marginTop="-0.5rem"
-                  >
-                    {val.year}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-              <CardActions>
-                <Button size="small" color="primary">
-                  Read more
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Box>
+    <Grid
+      container
+      spacing={{ xs: 2, md: 3 }}
+      columns={{ xs: 4, sm: 8, md: 12 }}
+      paddingTop="20px"
+      justifyContent={"center"}
+    >
+      {material.map((val) => (
+        <Grid item>
+          <Card
+            sx={{
+              width: 260,
+              borderRadius: "10px",
+            }}
+          >
+            <CardActionArea>
+              <CardMedia
+                component={"img"}
+                height="330"
+                image={val.imageUrl}
+                sx={{
+                  width: "100%",
+                  objectFit: "contain",
+                }}
+              />
+              <CardContent>
+                <Typography
+                  gutterBottom
+                  variant="h6"
+                  component={"div"}
+                  fontWeight="bold"
+                >
+                  {val.title}
+                </Typography>
+                <Typography gutterBottom varian="h7">
+                  {val.author}
+                </Typography>
+                <Typography
+                  gutterBottom
+                  varian="h7"
+                  fontStyle={"italic"}
+                  marginTop="-0.5rem"
+                >
+                  {val.year}
+                </Typography>
+              </CardContent>
+            </CardActionArea>
+            <CardActions>
+              <Button size="small" color="primary">
+                Read more
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      ))}
+    </Grid>
   )
 }
 

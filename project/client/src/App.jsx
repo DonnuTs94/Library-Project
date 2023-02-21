@@ -11,6 +11,7 @@ import { ThemeProvider } from "@mui/material/styles"
 import { Route, Router, Routes } from "react-router-dom"
 import LandingPage from "./components/Home/LandingPage"
 import Navbar from "./components/Navbar/Navbar"
+import SignIn from "./components/SignIn/SignIn"
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/signin" element={<SignIn />} />
       </Routes>
     </main>
   )
