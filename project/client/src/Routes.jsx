@@ -16,6 +16,7 @@ const LibraryRoutes = () => {
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/sign" element={<SignInOutContainer />} />
+          <Route path="/admin-books" element={<ShowAdminBooks />} />
         </Routes>
       </main>
     </>
