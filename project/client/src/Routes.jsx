@@ -1,16 +1,25 @@
-import { Routes } from "react-router-dom"
-import Page1 from "./pages/Page1"
-import Page2 from "./pages/Page2"
+import { Routes, Route } from "react-router-dom"
 
-const Route = () => {
+import LandingPage from "./components/Home/LandingPage"
+import Navbar from "./components/Navbar/Navbar"
+import SignIn from "./components/Sign/SignIn"
+import SignUp from "./components/Sign/SignUp"
+import SignInOutContainer from "./components/Sign/Sign"
+
+const LibraryRoutes = () => {
   return (
     <>
-      <Routes>
-        <Route path="/page1" element={<Page1 />} />
-        <Route path="/page2" element={<Page2 />} />
-      </Routes>
+      <main>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/sign" element={<SignInOutContainer />} />
+        </Routes>
+      </main>
     </>
   )
 }
 
-export default Route
+export default LibraryRoutes

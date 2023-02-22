@@ -8,36 +8,20 @@ import {
   Typography,
 } from "@mui/material"
 import { ThemeProvider } from "@mui/material/styles"
-import { Route, Router, Routes } from "react-router-dom"
+import { Router, Routes } from "react-router-dom"
 import LandingPage from "./components/Home/LandingPage"
 import Navbar from "./components/Navbar/Navbar"
-import SignIn from "./components/SignIn/SignIn"
+import SignIn from "./components/Sign/SignIn"
+import LibraryRoutes from "./Routes"
 
 function App() {
   return (
-    // <>
-    //   <Container component="main" maxWidth="xs" border="1px solid black">
-    //     <CssBaseline />
-    //     <Box
-    //       sx={{
-    //         mt: 8,
-    //         display: "flex",
-    //         flexDirection: "column",
-    //         alignItems: "center",
-    //       }}
-    //       border="1px solid black"
-    //     >
-    //       <Typography variant="h5">Sign Up</Typography>
-    //     </Box>
-    //   </Container>
-    // </>
-    <main>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignIn />} />
-      </Routes>
-    </main>
+    <>
+      <LibraryRoutes />
+    </>
+    // <main>
+
+    // </main>
   )
 }
 

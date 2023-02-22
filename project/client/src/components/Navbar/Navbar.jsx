@@ -160,14 +160,14 @@ const Navbar = () => {
               onClick={handleCloseNavMenu2}
             >
               <MenuItem>Edit Profile</MenuItem>
-              <Link to={"/signin"}>
+              <Link to={"/sign"}>
                 <MenuItem
                   sx={{
                     fontFamily: "sans-serif",
                     textDecoration: "none",
                   }}
                 >
-                  Sign In/Out
+                  Sign In/Up
                 </MenuItem>
               </Link>
             </Menu>
