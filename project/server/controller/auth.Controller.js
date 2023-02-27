@@ -19,11 +19,12 @@ const authController = {
           message: "Your email has been used",
         })
       }
+      const hashedPassword = bcrypt.hashSync(password, 5)
 
       await User.create({
         email,
         username,
-        password,
+        password: hashedPassword,
         gender,
       })
 

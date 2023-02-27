@@ -1,9 +1,10 @@
-import { API } from "../../api"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import React from "react"
+import { API } from "../../api"
+import Alert from "@mui/material/Alert"
+import Stack from "@mui/material/Stack"
 
-export default function RegisterUser() {
+export const useSignUpFormik = () => {
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -13,12 +14,13 @@ export default function RegisterUser() {
     },
     onSubmit: async ({ email, username, password, gender }) => {
       try {
-        const response = await API.post("/auth/resgiter", {
+        const response = await API.post("/auth/register", {
           email,
           username,
           password,
           gender,
         })
+
         formik.setFieldValue({
           email: "",
           username: "",
@@ -40,4 +42,11 @@ export default function RegisterUser() {
         ),
     }),
   })
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target
+    formik.setFieldValue(name, value)
+  }
+
+  return { formik, handleChange }
 }
