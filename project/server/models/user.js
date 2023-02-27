@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       profile_picture: DataTypes.STRING,
       date_of_birth: DataTypes.DATE,
       is_verified: DataTypes.BOOLEAN,
+      gender: DataTypes.STRING,
     },
     {
       sequelize,

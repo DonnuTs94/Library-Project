@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar/Navbar"
 import SignIn from "./components/Sign/SignIn"
 import SignUp from "./components/Sign/SignUp"
 import SignInOutContainer from "./components/Sign/Sign"
+import ShowAdminBooks from "./pages/admin/showAdminBooks/showAdminBooks.pages"
 
 const LibraryRoutes = () => {
   return (

@@ -14,6 +14,11 @@ import {
 import React from "react"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { CheckBox } from "@mui/icons-material"
+import { useEffect } from "react"
+
+import { API } from "../../api"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
 const SignUp = () => {
   const paperStyle = {
@@ -26,6 +31,49 @@ const SignUp = () => {
   const headerStyle = { margin: 0 }
   const avatarStyle = { backgroundColor: "#1e81b0" }
   const marginTop = { marginTop: 5 }
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      username: "",
+      password: "",
+      gender: "",
+    },
+    onSubmit: async ({ email, username, password, gender }) => {
+      try {
+        const response = await API.post("/auth/register", {
+          email,
+          username,
+          password,
+          gender,
+        })
+        formik.setFieldValue({
+          email: "",
+          username: "",
+          password: "",
+          gender: "",
+        })
+      } catch (err) {
+        return err.response
+      }
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().required("Please enter your email address").email(),
+      username: Yup.string().required("Please enter your username"),
+      password: Yup.string()
+        .required("Please enter your new password")
+        .matches(
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+          "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+        ),
+    }),
+  })
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target
+    formik.setFieldValue(name, value)
+  }
+
   return (
     <Grid>
       <Paper style={paperStyle}>
@@ -38,7 +86,7 @@ const SignUp = () => {
             Please fill this form to create an account !
           </Typography>
         </Grid>
-        <form>
+        <form onSubmit={formik.handleSubmit}>
           <TextField
             fullWidth
             label="Name"
@@ -46,13 +94,22 @@ const SignUp = () => {
             sx={{
               paddingBottom: "10px",
             }}
+            onChange={handleChange}
+            name="username"
           />
-          <TextField fullWidth label="Email" placeholder="Enter your email" />
+          <TextField
+            fullWidth
+            label="Email"
+            placeholder="Enter your email"
+            name="email"
+            onChange={handleChange}
+          />
           <FormControl component={"fieldset"} style={marginTop}>
             <FormLabel component={"legend"}>Gender</FormLabel>
             <RadioGroup
               aria-label="gender"
               name="gender"
+              onChange={handleChange}
               style={{ display: "initial" }}
             >
               <FormControlLabel
@@ -67,11 +124,6 @@ const SignUp = () => {
               />
             </RadioGroup>
           </FormControl>
-          {/* <TextField
-            fullWidth
-            label="Phone Number"
-            placeholder="Enter your phone number"
-          /> */}
           <TextField
             fullWidth
             label="Password"
@@ -79,6 +131,8 @@ const SignUp = () => {
             sx={{
               paddingBottom: "10px",
             }}
+            onChange={handleChange}
+            name="password"
           />
           <TextField
             fullWidth
@@ -87,6 +141,8 @@ const SignUp = () => {
             sx={{
               paddingBottom: "10px",
             }}
+            onChange={handleChange}
+            name="password"
           />
           <FormControlLabel
             control={<CheckBox name="checkedA" />}
