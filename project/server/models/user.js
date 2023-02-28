@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
-        allowNull: true,
+        // allowNull: true,
       },
     },
     {

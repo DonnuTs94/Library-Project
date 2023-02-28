@@ -6,6 +6,7 @@ const User = db.User
 const bcrypt = require("bcrypt")
 const emailer = require("../lib/emailer")
 const otpGenerator = require("otp-generator")
+const { object } = require("yup")
 
 const authController = {
   registerUser: async (req, res) => {
@@ -66,6 +67,41 @@ const authController = {
       return res.status(200).json({
         message: "User registered",
       })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  verifyOtp: async (req, res) => {
+    try {
+      const currentDate = new Date()
+      const { otpInput } = req.body
+      const timeLimitInMs = 5 * 60 * 1000
+      const latestVerificationTime = new Date(Date.now() - timeLimitInMs)
+
+      const otpExist = await User.findOne({
+        where: {
+          id: obj.otp,
+          // otp: otpInput,
+          // verified: false,
+          // expiration_time: { [Op.gte]: new Date() },
+        },
+      })
+      // if (!otpVerif) {
+      //   console.log("Invalid or expired OTP number.")
+      //   return res.status(200).json({
+      //     message: "Invalid or expired OTP number.",
+      //   })
+      // } else {
+      //   await User.update({
+      //     verified: true,
+      //     where: {
+      //       id: req.params.id,
+      //     },
+      //   })
+      //   return res.status(200).json({
+      //     message: "User verified",
+      //   })
+      // }
     } catch (err) {
       console.log(err)
     }
