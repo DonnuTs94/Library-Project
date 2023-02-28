@@ -8,6 +8,7 @@ import {
   Paper,
   Radio,
   RadioGroup,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material"
@@ -15,6 +16,9 @@ import React from "react"
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline"
 import { CheckBox } from "@mui/icons-material"
 import { useSignUpFormik } from "../../lib/register/formikConfig2"
+import Alert from "@mui/material/Alert"
+import Stack from "@mui/material/Stack"
+import { useState } from "react"
 
 const SignUp = () => {
   const paperStyle = {
@@ -30,6 +34,20 @@ const SignUp = () => {
 
   const { formik, handleChange } = useSignUpFormik()
 
+  const [showSnackBar, setShowSnackbar] = useState(false)
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+    setShowSnackbar(false)
+  }
+  const handleFormSubmit = (event) => {
+    event.preventDefault()
+    formik.handleSubmit()
+    setShowSnackbar(true)
+  }
+
   return (
     <Grid>
       <Paper style={paperStyle}>
@@ -42,7 +60,7 @@ const SignUp = () => {
             Please fill this form to create an account !
           </Typography>
         </Grid>
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={handleFormSubmit}>
           <TextField
             fullWidth
             label="Name"
@@ -107,6 +125,19 @@ const SignUp = () => {
           <Button type="submit" variant="contained" color="primary">
             Sign Up
           </Button>
+          <Snackbar
+            open={showSnackBar}
+            autoHideDuration={1000}
+            onClose={handleClose}
+          >
+            <Alert
+              onClose={handleClose}
+              severity="success"
+              sx={{ width: "100%" }}
+            >
+              This is a success message!
+            </Alert>
+          </Snackbar>
         </form>
       </Paper>
     </Grid>
