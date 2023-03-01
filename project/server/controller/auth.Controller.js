@@ -80,12 +80,27 @@ const authController = {
 
       const otpExist = await User.findOne({
         where: {
-          id: obj.otp,
-          // otp: otpInput,
-          // verified: false,
-          // expiration_time: { [Op.gte]: new Date() },
+          id: req.params.id,
+          // email,
+          verified: false,
         },
+        attributes: ["id"],
       })
+      if (otpInput !== User.otp) {
+        if (req.body.otp == otp) {
+          return res.status(401).json({
+            message: "Kode yang kamu masukkan salah.",
+          })
+        } else {
+          return res.status(401).json({
+            message: "Kode yang kamu masukkan sudah tidak berlaku.",
+          })
+        }
+      }
+      // const updatedUser = await User.findOne(User.id, {
+      //   $set: { verified: true },
+      // })
+      // return [true, updatedUser]
       // if (!otpVerif) {
       //   console.log("Invalid or expired OTP number.")
       //   return res.status(200).json({
@@ -98,10 +113,9 @@ const authController = {
       //       id: req.params.id,
       //     },
       //   })
-      //   return res.status(200).json({
-      //     message: "User verified",
-      //   })
-      // }
+      return res.status(200).json({
+        message: "User verified",
+      })
     } catch (err) {
       console.log(err)
     }
