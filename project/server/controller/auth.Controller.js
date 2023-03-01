@@ -26,7 +26,7 @@ const authController = {
       const otp = generateRandomNumber()
 
       function AddMinutesToDate(date, minutes) {
-        return new Date(date.getTime() + minutes * 60000)
+        return new Date(date.getTime() + minutes * 60 * 1000)
       }
       const now = new Date()
       const expiration_time = AddMinutesToDate(now, 10)
@@ -83,14 +83,14 @@ const authController = {
         where: {
           id: req.params.id,
         },
-        attributes: ["id", "otp", "verified"],
+        attributes: ["id", "otp", "verified", "expiration_time"],
       })
       if (!otpExist || otpInput !== otpExist.otp) {
         return res.status(401).json({
           message: "Kode yang kamu masukkan salah.",
         })
       }
-      if (latestVerificationTime > otpExist.expiration_time) {
+      if (currentDate >= otpExist.expiration_time) {
         return res.status(401).json({
           message: "Kode yang kamu masukkan sudah tidak berlaku.",
         })
@@ -100,16 +100,14 @@ const authController = {
           message: "user sudah diverifikasi",
         })
       }
-
       await db.User.update(
-        { verified: true },
+        { verified: true, otp: null, expiration_time: null },
         {
           where: {
             id: req.params.id,
           },
         }
       )
-
       return res.status(200).json({
         message: "User verified",
       })

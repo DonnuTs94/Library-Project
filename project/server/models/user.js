@@ -23,7 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       is_verified: DataTypes.BOOLEAN,
       gender: DataTypes.STRING,
       otp: DataTypes.STRING,
-      expiration_time: DataTypes.DATE,
+      expiration_time: {
+        type: "TIMESTAMP",
+        defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      },
       verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
@@ -33,6 +36,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       sequelize,
       modelName: "User",
+      updatedAt: false,
     }
   )
   return User
