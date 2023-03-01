@@ -1,4 +1,4 @@
-const { Op } = require("sequelize")
+const { Op, where } = require("sequelize")
 const fs = require("fs")
 const db = require("../models")
 const handlebars = require("handlebars")
@@ -49,6 +49,7 @@ const authController = {
         gender,
         otp: otp,
         expiration_time: expiration_time,
+        verified: false,
       })
       // SENDING EMAIL
       const rawHTML = fs.readFileSync("templates/register_user.html", "utf-8")
@@ -78,41 +79,39 @@ const authController = {
       const timeLimitInMs = 5 * 60 * 1000
       const latestVerificationTime = new Date(Date.now() - timeLimitInMs)
 
+      // if (!req.params.id) {
+      //   return res.status(401).json({
+      //     message: "ID tidak ditemukan",
+      //   })
+      // }
+
       const otpExist = await User.findOne({
         where: {
           id: req.params.id,
-          // email,
-          verified: false,
         },
-        attributes: ["id"],
+        attributes: ["id", "otp", "verified"],
       })
-      if (otpInput !== User.otp) {
-        if (req.body.otp == otp) {
-          return res.status(401).json({
-            message: "Kode yang kamu masukkan salah.",
-          })
-        } else {
-          return res.status(401).json({
-            message: "Kode yang kamu masukkan sudah tidak berlaku.",
-          })
-        }
+      if (!otpExist || otpInput !== otpExist.otp) {
+        return res.status(401).json({
+          message: "Kode yang kamu masukkan salah.",
+        })
       }
-      // const updatedUser = await User.findOne(User.id, {
-      //   $set: { verified: true },
+      if (latestVerificationTime > otpExist.expiration_time) {
+        return res.status(401).json({
+          message: "Kode yang kamu masukkan sudah tidak berlaku.",
+        })
+      }
+      if (otpExist.verified) {
+        return res.status(200).json({
+          message: "user sudah diverifikasi",
+        })
+      }
+
+      // await db.User.update({
+      //   // id: req.params.id,
+      //   verified: true,
       // })
-      // return [true, updatedUser]
-      // if (!otpVerif) {
-      //   console.log("Invalid or expired OTP number.")
-      //   return res.status(200).json({
-      //     message: "Invalid or expired OTP number.",
-      //   })
-      // } else {
-      //   await User.update({
-      //     verified: true,
-      //     where: {
-      //       id: req.params.id,
-      //     },
-      //   })
+
       return res.status(200).json({
         message: "User verified",
       })
