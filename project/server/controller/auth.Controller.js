@@ -90,7 +90,7 @@ const authController = {
           message: "Kode yang kamu masukkan salah.",
         })
       }
-      if (currentDate >= otpExist.expiration_time) {
+      if (currentDate > otpExist.expiration_time) {
         return res.status(401).json({
           message: "Kode yang kamu masukkan sudah tidak berlaku.",
         })
