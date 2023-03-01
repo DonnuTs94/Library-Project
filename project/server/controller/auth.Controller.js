@@ -79,12 +79,6 @@ const authController = {
       const timeLimitInMs = 5 * 60 * 1000
       const latestVerificationTime = new Date(Date.now() - timeLimitInMs)
 
-      // if (!req.params.id) {
-      //   return res.status(401).json({
-      //     message: "ID tidak ditemukan",
-      //   })
-      // }
-
       const otpExist = await User.findOne({
         where: {
           id: req.params.id,
@@ -107,10 +101,14 @@ const authController = {
         })
       }
 
-      // await db.User.update({
-      //   // id: req.params.id,
-      //   verified: true,
-      // })
+      await db.User.update(
+        { verified: true },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      )
 
       return res.status(200).json({
         message: "User verified",
