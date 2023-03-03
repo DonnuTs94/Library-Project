@@ -8,7 +8,7 @@ export const otpVerif = () => {
     },
     onSubmit: async ({ otpInput }) => {
       try {
-        const response = await API.post(`/auth/verify`, {
+        const response = await API.post("/auth/verify", {
           otpInput,
         })
         formik.setFieldValue({
