@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react"
 import { API } from "../../../api"
 import {
+  Button,
   CardMedia,
   IconButton,
+  MenuItem,
   Paper,
   Table,
   TableBody,
@@ -11,16 +13,23 @@ import {
   TablePagination,
   TableRow,
   Tooltip,
+  Typography,
 } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import { useSearchParams } from "react-router-dom"
 import Carousel from "react-material-ui-carousel"
 import TableHeadList from "../../../components/admin/tableHeadList/TableHeadList.component"
+import { Box } from "@mui/system"
 
 const ShowAdminBooks = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const [books, setBooks] = useState([])
+  const [displayBooks, setDisplayBooks] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(
+    searchParams.get("category") || null
+  )
+  const [categories, setCategories] = useState([])
   const [order, setOrder] = useState(searchParams.get("order") || "asc")
   const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || "")
   const [showTruncate, setShowTruncate] = useState(true)
@@ -31,6 +40,8 @@ const ShowAdminBooks = () => {
     parseInt(searchParams.get("row")) || 5
   )
 
+  // console.log(displayBooks)
+  // console.log(books)
   const truncate = (input) =>
     input.length > 40 ? `${input.substring(0, 40)}` : input
 
@@ -65,12 +76,25 @@ const ShowAdminBooks = () => {
   const foundAllBooks = async () => {
     try {
       const response = await API.get(`/api/admin-books/`)
+      // console.log(response)
       setBooks(response.data.data)
+      setDisplayBooks(response.data.data)
     } catch (err) {
       console.log(err)
     }
   }
 
+  const foundAllCategories = async () => {
+    try {
+      const categoriesResponse = await API.get("api/admin-books/categories/")
+      setCategories(categoriesResponse.data.data)
+    } catch (err) {
+      console.log(err)
+    }
+    // console.log(categories)
+  }
+
+  // console.log(categories)
   const handleRequestShort = (event, prop) => {
     const isAsc = orderBy === prop && order === "asc"
     setOrder(isAsc ? "desc" : "asc")
@@ -86,8 +110,23 @@ const ShowAdminBooks = () => {
     setCurrentPage(newPage)
   }
 
+  const categoriesChangeHandler = (event) => {
+    // console.log(event.target.value)
+    // console.log(books[0])
+
+    // const filterBooks = books.filter((book) => {
+    //   return book.CategoryId === event.target.value
+    // })
+    // setDisplayBooks(filterBooks)
+    // console.log(filterBooks)
+
+    setSelectedCategory(event.target.value)
+  }
+
+  // console.log(displayBooks)
   useEffect(() => {
     foundAllBooks()
+    foundAllCategories()
   }, [])
 
   useEffect(() => {
@@ -99,19 +138,47 @@ const ShowAdminBooks = () => {
     })
   }, [currentPage, rowPerPage, order, orderBy, setSearchParams])
 
+  useEffect(() => {
+    if (selectedCategory === null) {
+      return
+    }
+    // const filterBooks = books.filter((book) => {
+    //   return book.CategoryId === selectedCategory
+    // })
+    console.log(selectedCategory)
+    setDisplayBooks(books)
+
+    searchParams.set("category", selectedCategory)
+    setSearchParams(searchParams)
+  }, [selectedCategory, books, searchParams, setSearchParams])
+
   return (
     <>
       <Paper sx={{ width: "100%", overflow: "hidden" }}>
+        {/* <GridToolbarFilterButton onChange={handleFilterChange} /> */}
+        {/* <FormControl> */}
+        <div>
+          {categories.map((val) => (
+            <MenuItem
+              value={val.id}
+              key={val.id}
+              onClick={categoriesChangeHandler}
+            >
+              {val.category_name}
+            </MenuItem>
+          ))}
+        </div>
+        {/* </FormControl> */}
         <TableContainer>
           <Table size="medium">
             <TableHeadList
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestShort}
-              rowCount={books.length}
+              rowCount={displayBooks.length}
             />
             <TableBody>
-              {stableSort(books, getComparator(order, orderBy))
+              {stableSort(displayBooks, getComparator(order, orderBy))
                 .slice(
                   currentPage * rowPerPage,
                   currentPage * rowPerPage + rowPerPage
@@ -134,7 +201,7 @@ const ShowAdminBooks = () => {
                           ? truncate(row.description)
                           : row.description}
                         <Tooltip title={row.description}>
-                          <span style={{ cursor: "pointer" }}>...</span>
+                          <span style={{ cursor: "pointer" }}> ...</span>
                         </Tooltip>
                       </TableCell>
                       <TableCell>
@@ -177,7 +244,7 @@ const ShowAdminBooks = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 15]}
           component="div"
-          count={books.length}
+          count={displayBooks.length}
           rowsPerPage={rowPerPage}
           page={currentPage}
           onPageChange={handlePage}

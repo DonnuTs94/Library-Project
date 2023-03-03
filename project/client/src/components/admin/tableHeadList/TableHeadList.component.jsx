@@ -29,7 +29,7 @@ const TableHeadList = (props) => {
             style={{ minWidth: val.minWidth }}
             sx={{
               fontWeight: "bold",
-              backgroundColor: "#39B5E0",
+              backgroundColor: "#1e81b0",
               color: "white",
             }}
           >
@@ -52,7 +52,7 @@ const TableHeadList = (props) => {
           sx={{
             minWidth: 170,
             fontWeight: "bold",
-            backgroundColor: "#39B5E0",
+            backgroundColor: "#1e81b0",
             color: "white",
           }}
         >
@@ -63,7 +63,7 @@ const TableHeadList = (props) => {
           sx={{
             minWidth: 170,
             fontWeight: "bold",
-            backgroundColor: "#39B5E0",
+            backgroundColor: "#1e81b0",
             color: "white",
           }}
         >
@@ -74,7 +74,7 @@ const TableHeadList = (props) => {
           sx={{
             minWidth: 100,
             fontWeight: "bold",
-            backgroundColor: "#39B5E0",
+            backgroundColor: "#1e81b0",
             color: "white",
           }}
         >
@@ -85,7 +85,7 @@ const TableHeadList = (props) => {
           sx={{
             minWidth: 100,
             fontWeight: "bold",
-            backgroundColor: "#39B5E0",
+            backgroundColor: "#1e81b0",
             color: "white",
           }}
         >
