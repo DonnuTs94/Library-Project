@@ -6,6 +6,7 @@ import SignIn from "./components/Sign/SignIn"
 import SignUp from "./components/Sign/SignUp"
 import SignInOutContainer from "./components/Sign/Sign"
 import ShowAdminBooks from "./pages/admin/showAdminBooks/showAdminBooks.pages"
+import TrialHeadList from "./pages/admin/trial/TrialHeadList"
 
 const LibraryRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const LibraryRoutes = () => {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/sign" element={<SignInOutContainer />} />
           <Route path="/admin-books" element={<ShowAdminBooks />} />
+          <Route path="/trial" element={<TrialHeadList />} />
         </Routes>
       </main>
     </>
