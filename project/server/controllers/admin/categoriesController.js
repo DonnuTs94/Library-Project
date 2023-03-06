@@ -103,7 +103,7 @@ const categoriesController = {
       }
 
       await category.destroy()
-      res.json({ message: "Category deleted successfully" })
+      return res.status(201).json({ message: "Category deleted successfully" })
     } catch (err) {
       console.error(err)
       return res
