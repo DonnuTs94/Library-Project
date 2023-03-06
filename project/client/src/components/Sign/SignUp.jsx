@@ -19,6 +19,7 @@ import { useSignUpFormik } from "../../lib/register/formikConfig2"
 import Alert from "@mui/material/Alert"
 import Stack from "@mui/material/Stack"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 
 const SignUp = () => {
   const paperStyle = {
@@ -122,9 +123,11 @@ const SignUp = () => {
             control={<CheckBox name="checkedA" />}
             label="I accept the terms and conditions."
           />
+          {/* <Link to={"/confirm-otp"}> */}
           <Button type="submit" variant="contained" color="primary">
             Sign Up
           </Button>
+          {/* </Link> */}
           <Snackbar
             open={showSnackBar}
             autoHideDuration={1000}
