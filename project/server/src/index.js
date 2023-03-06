@@ -3,6 +3,8 @@ const cors = require("cors")
 const db = require("../models")
 
 const categoriesRoute = require("../routes/admin/category.Routes")
+const admindBooks = require("../routes/admin-books.Route")
+const authRoute = require("../routes/auth.route")
 
 const PORT = 8000
 const app = express()
@@ -11,6 +13,8 @@ app.use(cors())
 app.use(express.json())
 
 app.use("/categories", categoriesRoute)
+app.use("/api/admin-books", admindBooks)
+app.use("/auth", authRoute)
 
 app.listen(PORT, (err) => {
   if (err) {
