@@ -113,12 +113,12 @@ const authController = {
       //SENDING EMAIL
       const rawHTML = fs.readFileSync("templates/verify_success.html", "utf-8")
       const compiledHTML = handlebars.compile(rawHTML)
-      // const htmlResult = compiledHTML({
-      //   username,
-      // })
+      const htmlResult = compiledHTML({
+        // username,
+      })
       await emailer({
         to: email,
-        html: compiledHTML,
+        html: htmlResult,
         subject: "Verify your account",
         text: "Please verify your account",
       })
@@ -138,15 +138,16 @@ const authController = {
           email,
           verified: false,
         },
-        attributes: ["id"],
+        attributes: ["id", "username"],
       })
+      const { username } = user
       // New OTP
       function generateRandomNumber() {
         var minm = 10000
         var maxm = 99999
         return Math.floor(Math.random() * (maxm - minm + 1)) + minm
       }
-      const reqOTP = generateRandomNumber()
+      const otp = generateRandomNumber()
       // New Expiration time
       function AddMinutesToDate(date, minutes) {
         return new Date(date.getTime() + minutes * 60 * 1000)
@@ -154,19 +155,21 @@ const authController = {
       const now = new Date()
       const expired_time = AddMinutesToDate(now, 10)
       await User.update(
-        { otp: reqOTP, expiration_time: expired_time },
+        { otp: otp, expiration_time: expired_time },
         {
           where: {
             email,
           },
         }
       )
+
       // SENDING EMAIL
       const rawHTML = fs.readFileSync("templates/register_user.html", "utf-8")
       const compiledHTML = handlebars.compile(rawHTML)
       const htmlResult = compiledHTML({
         otp,
-        username,
+        email,
+        username: username,
       })
       await emailer({
         to: email,
