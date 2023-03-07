@@ -25,4 +25,7 @@ module.exports = {
       })
     }
   },
+  createBooks: async (req, res) => {},
+  updateBooks: async (req, res) => {},
+  deleteBooks: async (req, res) => {},
 }
