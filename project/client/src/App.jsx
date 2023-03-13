@@ -22,19 +22,6 @@ function App() {
       <LibraryRoutes />
       <Container>
         <CssBaseline />
-        {/* <Box
-          sx={{
-            mt: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-          border="1px solid black"
-        ></Box> */}
-        {/* <Routes>
-          <Route path="/admin-books" element={<ShowAdminBooks />} />
-        </Routes> */}
-        {/* <LibraryRoutes /> */}
       </Container>
     </>
     // <main>

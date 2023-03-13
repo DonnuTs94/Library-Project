@@ -3,8 +3,13 @@ import * as Yup from "yup"
 import { API } from "../../api"
 import Alert from "@mui/material/Alert"
 import Stack from "@mui/material/Stack"
+import { useSelector, useDispatch } from "react-redux"
+import { register } from "../../redux/features/authSlice"
 
 export const useSignUpFormik = () => {
+  const selector = useSelector((state) => state.auth)
+  const dispatch = useDispatch()
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -20,6 +25,12 @@ export const useSignUpFormik = () => {
           password,
           gender,
         })
+        console.log(response.data.data.email, "try")
+        dispatch(
+          register({
+            email: response.data.data.email,
+          })
+        )
 
         formik.setFieldValue({
           email: "",
@@ -48,5 +59,5 @@ export const useSignUpFormik = () => {
     formik.setFieldValue(name, value)
   }
 
-  return { formik, handleChange }
+  return { formik, handleChange, selector }
 }

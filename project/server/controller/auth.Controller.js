@@ -14,12 +14,7 @@ const authController = {
   registerUser: async (req, res) => {
     try {
       const { email, username, password, gender } = req.body
-      //GENERATE OTP
-      // const otp = otpGenerator.generate(6, {
-      //   alphabets: false,
-      //   upperCase: false,
-      //   specialChars: false,
-      // })
+
       function generateRandomNumber() {
         var minm = 10000
         var maxm = 99999
@@ -44,7 +39,7 @@ const authController = {
       }
       const hashedPassword = bcrypt.hashSync(password, 5)
 
-      await User.create({
+      const createUser = await User.create({
         email,
         username,
         password: hashedPassword,
@@ -69,9 +64,13 @@ const authController = {
 
       return res.status(200).json({
         message: "User registered",
+        data: createUser,
       })
     } catch (err) {
       console.log(err)
+      return res.status(400).json({
+        message: "Server error",
+      })
     }
   },
   verifyOtp: async (req, res) => {

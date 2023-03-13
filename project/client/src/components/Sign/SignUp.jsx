@@ -19,9 +19,14 @@ import { useSignUpFormik } from "../../lib/register/formikConfig2"
 import Alert from "@mui/material/Alert"
 import Stack from "@mui/material/Stack"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { createContext } from "react"
 
 const SignUp = () => {
+  const RegisterContext = createContext()
+  const [isAvailable, setIsAvailable] = useState(false)
+  const navigate = useNavigate()
+
   const paperStyle = {
     padding: 20,
     height: "75vh",
@@ -33,7 +38,7 @@ const SignUp = () => {
   const avatarStyle = { backgroundColor: "#1e81b0" }
   const marginTop = { marginTop: 5 }
 
-  const { formik, handleChange } = useSignUpFormik()
+  const { formik, handleChange, selector } = useSignUpFormik()
 
   const [showSnackBar, setShowSnackbar] = useState(false)
 
@@ -46,6 +51,8 @@ const SignUp = () => {
   const handleFormSubmit = (event) => {
     event.preventDefault()
     formik.handleSubmit()
+    navigate("/confirm-otp")
+
     setShowSnackbar(true)
   }
 
@@ -56,7 +63,7 @@ const SignUp = () => {
           <Avatar style={avatarStyle}>
             <AddCircleOutlineIcon />
           </Avatar>
-          <h1 style={headerStyle}> Sign Up</h1>
+          <h1 style={headerStyle}> Sign Up </h1>
           <Typography variant="caption" gutterBottom>
             Please fill this form to create an account !
           </Typography>
@@ -124,10 +131,16 @@ const SignUp = () => {
             label="I accept the terms and conditions."
           />
           {/* <Link to={"/confirm-otp"}> */}
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            // props={{ UserContext }}
+          >
             Sign Up
           </Button>
           {/* </Link> */}
+
           <Snackbar
             open={showSnackBar}
             autoHideDuration={1000}
