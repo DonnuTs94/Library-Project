@@ -11,16 +11,17 @@ const app = express()
 
 app.use(cors())
 app.use(express.json())
+// app.use("/api", express.static(path.join(__dirname, ".././public")))
 
 app.use("/categories", categoriesRoute)
 app.use("/api/admin-books", admindBooks)
 app.use("/auth", authRoute)
 
 app.listen(PORT, (err) => {
+  db.sequelize.sync({ alter: true })
   if (err) {
-    console.log(`ERROR: ${err}`)
+    console.log(`Error : ${err.message}`)
   } else {
-    db.sequelize.sync({ alter: true })
-    console.log(`APP RUNNING at ${PORT}`)
+    console.log(`Listening to PORT ${PORT}`)
   }
 })
