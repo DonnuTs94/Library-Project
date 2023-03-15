@@ -9,6 +9,9 @@ import {
   Box,
   Button,
   TextField,
+  Snackbar,
+  Alert,
+  AlertTitle,
 } from "@mui/material"
 import SendIcon from "@mui/icons-material/Send"
 // import { otpVerif } from "../../../lib/register/otpVerif"
@@ -18,12 +21,24 @@ import { Link } from "react-router-dom"
 import { useContext } from "react"
 import { useSelector } from "react-redux"
 import { useOtpFormik } from "../../../lib/register/otpVerif"
+import { useState } from "react"
 
 const OtpInput = (id) => {
-  const { formik, handleChange } = useOtpFormik()
+  const { formik, handleChange, alertMessage, alertSeverity } = useOtpFormik()
   const handleFormSubmit = (event) => {
     event.preventDefault()
     formik.handleSubmit()
+  }
+  const [open, setOpen] = useState(false)
+  const handleClick = () => {
+    setOpen(true)
+  }
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+
+    setOpen(false)
   }
 
   return (
@@ -59,10 +74,20 @@ const OtpInput = (id) => {
           }}
           endIcon={<SendIcon />}
           type="submit"
+          onClick={handleClick}
         >
           Send
         </Button>
       </form>
+
+      {alertMessage && (
+        <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+          <Alert severity={alertSeverity}>
+            <AlertTitle>{alertSeverity}</AlertTitle>
+            {alertMessage}
+          </Alert>
+        </Snackbar>
+      )}
     </Grid>
   )
 }

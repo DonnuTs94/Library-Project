@@ -110,17 +110,17 @@ const authController = {
         }
       )
       //SENDING EMAIL
-      const rawHTML = fs.readFileSync("templates/verify_success.html", "utf-8")
-      const compiledHTML = handlebars.compile(rawHTML)
-      const htmlResult = compiledHTML({
-        // username,
-      })
-      await emailer({
-        to: email,
-        html: htmlResult,
-        subject: "Verify your account",
-        text: "Please verify your account",
-      })
+      // const rawHTML = fs.readFileSync("templates/verify_success.html", "utf-8")
+      // const compiledHTML = handlebars.compile(rawHTML)
+      // const htmlResult = compiledHTML({
+      //   // username,
+      // })
+      // await emailer({
+      //   to: email,
+      //   html: htmlResult,
+      //   subject: "Verify your account",
+      //   text: "Please verify your account",
+      // })
 
       return res.status(200).json({
         message: "User verified",
