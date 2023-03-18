@@ -1,9 +1,15 @@
 const db = require("../models")
 const findAllAdminBooks = db.Books
-const { Book_Pictures, Books, Book_Stocks, Categories } = require("../models")
+const {
+  Book_Pictures,
+  Books,
+  Book_Stocks,
+  Categories,
+  Stocks,
+} = require("../models")
 const fs = require("fs")
 const path = require("path")
-// const image = require("../public")
+const { validationResult, body } = require("express-validator")
 
 module.exports = {
   getAllAdminBooks: async (req, res) => {
@@ -32,7 +38,7 @@ module.exports = {
   createBooks: async (req, res) => {
     try {
       // Input validation
-      const { title, author, description, categoryId } = req.body
+      const { title, author, description, categoryId, stock } = req.body
       if (!title || !author || !description || !categoryId) {
         return res
           .status(400)
@@ -71,7 +77,7 @@ module.exports = {
 
       // Create book stocks
       await Book_Stocks.create({
-        stock: 0,
+        stock,
         BookId: newBook.id,
       })
 
@@ -83,7 +89,44 @@ module.exports = {
       })
     }
   },
-  updateBooks: async (req, res) => {},
+  updateBooks: async (req, res) => {
+    try {
+      const { id } = req.params
+      const { author, title, description, stock, CategoryId } = req.body
+
+      // Ensure the book's category exists
+      const category = await Categories.findOne({ where: { id: CategoryId } })
+      if (!category) {
+        return res.status(400).json({ message: "Category not found" })
+      }
+
+      // Update book data
+      const book = await Books.findOne({ where: { id } })
+      if (!book) {
+        return res.status(404).json({ message: "Book not found" })
+      }
+
+      book.author = author
+      book.title = title
+      book.description = description
+      book.CategoryId = CategoryId
+      await book.save()
+
+      // Update book stock
+      const bookStock = await Book_Stocks.findOne({ where: { BookId: id } })
+      if (!bookStock) {
+        return res.status(404).json({ message: "Book Stock not found" })
+      }
+
+      bookStock.stock = stock
+      await bookStock.save()
+
+      return res.json({ message: "Book updated successfully" })
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ message: `Failed to update book : ${err}` })
+    }
+  },
   deleteBooks: async (req, res) => {
     try {
       const { id } = req.params
@@ -113,9 +156,25 @@ module.exports = {
       await Book_Stocks.destroy({ where: { BookId: id } })
 
       return res.status(200).json({ message: "Book deleted successfully" })
-    } catch (error) {
-      console.log(error)
-      return res.status(500).json({ message: "Internal server error" })
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ message: "Internal server error : " })
+    }
+  },
+  getBookById: async (req, res) => {
+    const { id } = req.params
+    try {
+      const book = await Books.findByPk(id, {
+        include: [Categories, Book_Pictures],
+      })
+      if (book) {
+        return res.status(200).json(book)
+      } else {
+        return res.status(400).send("Book not found")
+      }
+    } catch (err) {
+      console.error(err)
+      return res.status(500).json({ message: `Internal Server Error : ${err}` })
     }
   },
 }
