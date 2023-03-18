@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
 
       Books.belongsTo(models.Categories)
       Books.hasMany(models.Book_Pictures)
-      Books.hasMany(models.Book_Stocks)
+      Books.hasMany(models.Book_Stocks, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      })
     }
   }
   Books.init(

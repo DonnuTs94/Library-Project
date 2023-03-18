@@ -9,12 +9,20 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Book_Stocks.belongsTo(models.Books)
+      Book_Stocks.belongsTo(models.Books, {
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      })
     }
   }
   Book_Stocks.init(
     {
-      stock: DataTypes.INTEGER,
+      stock: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+
+      // defaultValue: "0",
     },
     {
       sequelize,
