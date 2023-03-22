@@ -9,6 +9,7 @@ const otpGenerator = require("otp-generator")
 const { object } = require("yup")
 const { triggerAsyncId } = require("async_hooks")
 const { sequelize } = require("../models")
+const { signToken } = require("../lib/jwt")
 
 const authController = {
   registerUser: async (req, res) => {
@@ -180,6 +181,56 @@ const authController = {
       return res.status(200).json({
         message: "NEW OTP has been sent",
       })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  loginUserWithEmail: async (req, res) => {
+    try {
+      const { email, password } = req.body
+
+      const findUserByEmail = await User.findOne({
+        where: { email },
+        attributes: ["verified", "id", "password"],
+      })
+      if (!findUserByEmail) {
+        return res.status(400).json({
+          message: "User not found",
+        })
+      }
+      if (!findUserByEmail.verified) {
+        return res.status(200).json({
+          message: "Please activated your account first",
+        })
+      }
+      const passwordValid = bcrypt.compareSync(
+        password,
+        findUserByEmail.password
+      )
+      if (!passwordValid) {
+        return res.status(400).json({
+          message: "Your password incorrect. Re-type your password",
+        })
+      }
+      delete findUserByEmail.dataValues.password
+      const token = signToken({
+        id: findUserByEmail.id,
+      })
+
+      return res.status(201).json({
+        message: "Login successful",
+        data: findUserByEmail,
+        token,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  loginWithGoogle: async (req, res) => {
+    try {
+      const { googleToken } = req.body
+
+      // const {email} = await
     } catch (err) {
       console.log(err)
     }
