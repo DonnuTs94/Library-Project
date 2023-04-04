@@ -9,5 +9,6 @@ router.post("/register", authController.registerUser)
 router.post("/verify", authController.verifyOtp)
 router.post("/new-verify", authController.requestOTP)
 router.post("/login", authController.loginUserWithEmail)
+router.get("/refresh-token", verifyToken, authController.refreshToken)
 
 module.exports = router

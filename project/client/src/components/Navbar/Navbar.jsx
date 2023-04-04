@@ -18,6 +18,8 @@ import {
 import MenuIcon from "@mui/icons-material/Menu"
 import SearchBar from "./SearchBar"
 import { Link } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { useSignInWithEmail } from "../../lib/signin/signInEmail"
 
 const pages = ["Products", "Pricing", "Blog"]
 const settings = ["Profile", "Account", "Dashboard", "Logout"]
@@ -48,6 +50,13 @@ const Navbar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null)
   }
+
+  //===========
+  const authSelector = useSelector((state) => state.auth)
+  console.log(authSelector, "tryyyy")
+
+  const { logoutBtnHandler } = useSignInWithEmail()
+
   return (
     <AppBar
       position="static"
@@ -139,7 +148,19 @@ const Navbar = () => {
               <Tab label="cart" sx={{ color: "black" }} />
             </Tabs>
           </Box>
-          <Box sx={{ flexGrow: 0, paddingLeft: "10px" }}>
+
+          {authSelector.id === 0 ? null : (
+            <Typography
+              sx={{
+                color: "black",
+              }}
+            >
+              Hi {authSelector.username}
+            </Typography>
+          )}
+          <Box
+            sx={{ flexGrow: 0, paddingLeft: "10px", margin: "2px solid red" }}
+          >
             <IconButton
               sx={{ p: 0, position: "right" }}
               onClick={handleOpenNavMenu2}
@@ -160,16 +181,28 @@ const Navbar = () => {
               onClick={handleCloseNavMenu2}
             >
               <MenuItem>Edit Profile</MenuItem>
-              <Link to={"/sign"}>
+              {authSelector.id === 0 ? (
+                <Link to={"/sign"}>
+                  <MenuItem
+                    sx={{
+                      fontFamily: "sans-serif",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Sign In / Up
+                  </MenuItem>
+                </Link>
+              ) : (
                 <MenuItem
                   sx={{
                     fontFamily: "sans-serif",
                     textDecoration: "none",
                   }}
+                  onClick={logoutBtnHandler}
                 >
-                  Sign In/Up
+                  Logout
                 </MenuItem>
-              </Link>
+              )}
             </Menu>
           </Box>
         </Toolbar>

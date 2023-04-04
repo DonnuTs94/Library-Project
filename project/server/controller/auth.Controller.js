@@ -10,6 +10,7 @@ const { object } = require("yup")
 const { triggerAsyncId } = require("async_hooks")
 const { sequelize } = require("../models")
 const { signToken } = require("../lib/jwt")
+const { verifyGoogleToken } = require("../lib/firebase")
 
 const authController = {
   registerUser: async (req, res) => {
@@ -191,7 +192,7 @@ const authController = {
 
       const findUserByEmail = await User.findOne({
         where: { email },
-        attributes: ["verified", "id", "password"],
+        attributes: ["verified", "id", "password", "username"],
       })
       if (!findUserByEmail) {
         return res.status(400).json({
@@ -226,15 +227,32 @@ const authController = {
       console.log(err)
     }
   },
-  loginWithGoogle: async (req, res) => {
+  refreshToken: async (req, res) => {
     try {
-      const { googleToken } = req.body
+      const findUserById = await User.findByPk(req.user.id)
 
-      // const {email} = await
+      const renewToken = signToken({
+        id: req.user.id,
+      })
+      return res.status(200).json({
+        message: "renew user token",
+        data: findUserById,
+        token: renewToken,
+      })
     } catch (err) {
       console.log(err)
     }
   },
+  // loginWithGoogle: async (req, res) => {
+  //   try {
+  //     const { googleToken } = req.body
+  //   const {email} = await verifyGoogleToken(googleToken)
+
+  //     // const {email} = await
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // },
 }
 
 module.exports = authController

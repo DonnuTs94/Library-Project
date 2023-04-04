@@ -7,6 +7,7 @@ const initialState = {
   username: "",
   gender: "",
   password: "",
+  profile_picture: "",
 }
 
 const authSlice = createSlice({
@@ -21,9 +22,21 @@ const authSlice = createSlice({
       state.gender = action.payload.gender
       state.password = action.payload.password
     },
+    login: (state, action) => {
+      state.id = action.payload.id
+      state.email = action.payload.email
+      state.username = action.payload.username
+      state.profile_picture = action.payload.profile_picture
+    },
+    logout: (state, action) => {
+      state.id = 0
+      state.email = ""
+      state.username = ""
+      state.profile_picture = ""
+    },
   },
 })
 
-export const { register } = authSlice.actions
+export const { register, login, logout } = authSlice.actions
 
 export default authSlice.reducer

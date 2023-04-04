@@ -1,10 +1,13 @@
 import {
+  Alert,
+  AlertTitle,
   Avatar,
   Button,
   Container,
   FormControlLabel,
   Grid,
   Paper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material"
@@ -13,8 +16,34 @@ import LockIcon from "@mui/icons-material/Lock"
 import { CheckBox } from "@mui/icons-material"
 import GoogleIcon from "@mui/icons-material/Google"
 import { Link } from "react-router-dom"
+import { useSignInWithEmail } from "../../lib/signin/signInEmail"
+import { useState } from "react"
+import { useEffect } from "react"
 
-const SignIn = ({ handleChange }) => {
+const SignIn = () => {
+  const { formik, handleChange, alertMessage2, alertSeverity2, keepUserLogIn } =
+    useSignInWithEmail()
+  const handleFormSubmit = (event) => {
+    event.preventDefault()
+    formik.handleSubmit()
+  }
+  const [open, setOpen] = useState(false)
+  const handleClick = () => {
+    setOpen(true)
+  }
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return
+    }
+
+    setOpen(false)
+  }
+
+  // useEffect(() => {
+  //   keepUserLogIn()
+  // }, [])
+
   const paperStyle = {
     padding: 20,
     height: "60vh",
@@ -29,36 +58,53 @@ const SignIn = ({ handleChange }) => {
       {" "}
       <Grid>
         <Paper style={paperStyle}>
-          <Grid align="center">
-            <Avatar style={avatarStyle}>
-              <LockIcon />
-            </Avatar>
-            <h2>Sign In</h2>
-          </Grid>
-          <TextField
-            label="username"
-            placeholder="Enter username"
-            fullWidth
-            required
-            sx={{
-              paddingBottom: "10px",
-            }}
-          />
-          <TextField
-            label="password"
-            placeholder="Enter password"
-            fullWidth
-            required
-          />
-          <Button
-            type="submit"
-            color="primary"
-            variant="contained"
-            style={btnstyle}
-            fullWidth
-          >
-            Sign In
-          </Button>
+          <form onSubmit={handleFormSubmit}>
+            <Grid align="center">
+              <Avatar style={avatarStyle}>
+                <LockIcon />
+              </Avatar>
+              <h2>Sign In</h2>
+            </Grid>
+            <TextField
+              label="email"
+              name="email"
+              placeholder="Enter email"
+              fullWidth
+              required
+              sx={{
+                paddingBottom: "10px",
+              }}
+              value={formik.values.email}
+              onChange={handleChange}
+            />
+            <TextField
+              label="password"
+              name="password"
+              placeholder="Enter password"
+              fullWidth
+              required
+              value={formik.values.password}
+              onChange={handleChange}
+            />
+            <Button
+              type="submit"
+              color="primary"
+              variant="contained"
+              style={btnstyle}
+              fullWidth
+              onClick={handleClick}
+            >
+              Sign In
+            </Button>
+          </form>
+          {alertMessage2 && (
+            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
+              <Alert severity={alertSeverity2}>
+                <AlertTitle>{alertSeverity2}</AlertTitle>
+                {alertMessage2}
+              </Alert>
+            </Snackbar>
+          )}
           <Typography textAlign={"center"} color="gray">
             Or
           </Typography>
