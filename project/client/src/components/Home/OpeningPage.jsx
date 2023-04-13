@@ -56,6 +56,7 @@ const OpeningPage = () => {
             variant="contained"
             sx={{
               marginBottom: "5vh",
+              fontWeight: "bolder",
             }}
           >
             Explore More

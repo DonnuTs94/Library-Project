@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       // define association here
       User.belongsTo(models.Roles)
+      User.hasMany(models.Forget_Password)
     }
   }
   User.init(
@@ -20,12 +21,26 @@ module.exports = (sequelize, DataTypes) => {
       id_picture: DataTypes.STRING,
       profile_picture: DataTypes.STRING,
       date_of_birth: DataTypes.DATE,
-      is_verified: DataTypes.BOOLEAN,
       gender: DataTypes.STRING,
+      otp: DataTypes.STRING,
+      expiration_time: {
+        type: "TIMESTAMP",
+        defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+      createdAt: {
+        type: "TIMESTAMP",
+        defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+      },
+      verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        // allowNull: true,
+      },
     },
     {
       sequelize,
       modelName: "User",
+      updatedAt: false,
     }
   )
   return User
