@@ -33,7 +33,7 @@ const OtpForm = () => {
           height: { md: "40vh", xs: "60vh" },
           width: { md: "80vh", xs: "50vh" },
           margin: "0 auto",
-          marginTop: "50px",
+          marginTop: "150px",
         }}
       >
         <Grid align="center" marginBottom={"20px"}>

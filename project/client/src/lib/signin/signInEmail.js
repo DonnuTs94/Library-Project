@@ -13,6 +13,7 @@ export const useSignInWithEmail = () => {
   const [alertMessage2, setAlertMessage2] = useState("")
   const [alertSeverity2, setAlertSeverity2] = useState("")
   const [authCheck, setAuthCheck] = useState(false)
+  const [open, setOpen] = useState(false)
 
   // Logout
   const logoutBtnHandler = () => {
@@ -35,9 +36,10 @@ export const useSignInWithEmail = () => {
         })
         console.log(response, "try")
         localStorage.setItem("auth_token", response.data.token)
-        navigate("/")
+        setOpen(true)
         setAlertMessage2("Success!" + response.data.message)
         setAlertSeverity2("success")
+        navigate("/")
         dispatch(
           login({
             id: response.data.data.id,
@@ -49,6 +51,7 @@ export const useSignInWithEmail = () => {
         console.log(err)
         setAlertMessage2("Error: " + err.response.data.message)
         setAlertSeverity2("error")
+        setOpen(true)
       }
     },
   })
@@ -85,5 +88,7 @@ export const useSignInWithEmail = () => {
     alertSeverity2,
     logoutBtnHandler,
     keepUserLogIn,
+    open,
+    setOpen,
   }
 }

@@ -21,12 +21,14 @@ const authSlice = createSlice({
       state.username = action.payload.username
       state.gender = action.payload.gender
       state.password = action.payload.password
+      state.verified = action.payload.verified
     },
     login: (state, action) => {
       state.id = action.payload.id
       state.email = action.payload.email
       state.username = action.payload.username
       state.profile_picture = action.payload.profile_picture
+      state.verified = action.payload.verified
     },
     logout: (state, action) => {
       state.id = 0

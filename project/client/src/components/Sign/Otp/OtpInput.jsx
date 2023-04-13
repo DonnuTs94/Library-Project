@@ -24,20 +24,20 @@ import { useOtpFormik } from "../../../lib/register/otpVerif"
 import { useState } from "react"
 
 const OtpInput = (id) => {
-  const { formik, handleChange, alertMessage, alertSeverity } = useOtpFormik()
+  const { formik, handleChange, alertMessage, alertSeverity, open, setOpen } =
+    useOtpFormik()
   const handleFormSubmit = (event) => {
     event.preventDefault()
     formik.handleSubmit()
   }
-  const [open, setOpen] = useState(false)
-  const handleClick = () => {
-    setOpen(true)
-  }
+  // const [open, setOpen] = useState(false)
+  // const handleClick = () => {
+  //   setOpen(true)
+  // }
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
     }
-
     setOpen(false)
   }
 
@@ -74,15 +74,14 @@ const OtpInput = (id) => {
           }}
           endIcon={<SendIcon />}
           type="submit"
-          onClick={handleClick}
+          // onClick={handleClick}
         >
           Send
         </Button>
       </form>
-
       {alertMessage && (
         <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-          <Alert severity={alertSeverity}>
+          <Alert severity={alertSeverity} variant="filled">
             <AlertTitle>{alertSeverity}</AlertTitle>
             {alertMessage}
           </Alert>

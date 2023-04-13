@@ -7,6 +7,8 @@ import SignUp from "./components/Sign/SignUp"
 import SignInOutContainer from "./components/Sign/Sign"
 import ShowAdminBooks from "./pages/admin/showAdminBooks/showAdminBooks.pages"
 import OtpForm from "./components/Sign/Otp/OtpForm"
+import ForgotPassword from "./components/Forgot Password/ForgotPassword"
+import NewPassword from "./components/New Password/NewPassword"
 
 const LibraryRoutes = () => {
   return (
@@ -20,6 +22,8 @@ const LibraryRoutes = () => {
           <Route path="/sign" element={<SignInOutContainer />} />
           <Route path="/admin-books" element={<ShowAdminBooks />} />
           <Route path="/confirm-otp" element={<OtpForm />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/new-password/:id" element={<NewPassword />} />
         </Routes>
       </main>
     </>

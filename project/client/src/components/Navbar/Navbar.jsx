@@ -53,13 +53,12 @@ const Navbar = () => {
 
   //===========
   const authSelector = useSelector((state) => state.auth)
-  console.log(authSelector, "tryyyy")
 
   const { logoutBtnHandler } = useSignInWithEmail()
 
   return (
     <AppBar
-      position="static"
+      position="fixed"
       sx={{
         backgroundColor: "white",
         paddingBottom: "10px",
@@ -153,9 +152,12 @@ const Navbar = () => {
             <Typography
               sx={{
                 color: "black",
+                fontFamily: "sans-serif",
+                fontWeight: "bolder",
+                display: { xs: "none", md: "flex" },
               }}
             >
-              Hi {authSelector.username}
+              Hi {authSelector.username || "new user"}
             </Typography>
           )}
           <Box
@@ -180,6 +182,19 @@ const Navbar = () => {
               }}
               onClick={handleCloseNavMenu2}
             >
+              {authSelector.id === 0 || authSelector.id === null ? null : (
+                <Typography
+                  sx={{
+                    color: "black",
+                    fontFamily: "sans-serif",
+                    fontWeight: "bolder",
+                    display: { xs: "flex", md: "none" },
+                    justifyContent: "center",
+                  }}
+                >
+                  Hi {authSelector.username || "new user"}
+                </Typography>
+              )}
               <MenuItem>Edit Profile</MenuItem>
               {authSelector.id === 0 ? (
                 <Link to={"/sign"}>

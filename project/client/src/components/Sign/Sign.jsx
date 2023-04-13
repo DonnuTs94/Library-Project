@@ -9,9 +9,9 @@ const SignInOutContainer = () => {
   }
 
   const paperStyle = {
-    height: "100vh",
+    height: "80vh",
     width: "50vh",
-    margin: "20px auto",
+    margin: "100px auto",
   }
   function TabPanel(props) {
     const { children, value, index, ...other } = props

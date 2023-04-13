@@ -11,6 +11,7 @@ const { triggerAsyncId } = require("async_hooks")
 const { sequelize } = require("../models")
 const { signToken } = require("../lib/jwt")
 const { verifyGoogleToken } = require("../lib/firebase")
+const { async } = require("@firebase/util")
 
 const authController = {
   registerUser: async (req, res) => {
@@ -34,6 +35,11 @@ const authController = {
         where: { email },
       })
 
+      if (findUserByEmail && findUserByEmail.password === null) {
+        return res.status(400).json({
+          message: "Use your email to sign with google",
+        })
+      }
       if (findUserByEmail) {
         return res.status(400).json({
           message: "Your email has been used",
@@ -79,8 +85,8 @@ const authController = {
     try {
       const currentDate = new Date()
       const { otpInput, email } = req.body
-      const timeLimitInMs = 5 * 60 * 1000
-      const latestVerificationTime = new Date(Date.now() - timeLimitInMs)
+      // const timeLimitInMs = 5 * 60 * 1000
+      // const latestVerificationTime = new Date(Date.now() - timeLimitInMs)
 
       const otpExist = await User.findOne({
         where: {
@@ -109,20 +115,22 @@ const authController = {
           where: {
             email,
           },
+          attributes: ["username"],
         }
       )
       //SENDING EMAIL
-      // const rawHTML = fs.readFileSync("templates/verify_success.html", "utf-8")
-      // const compiledHTML = handlebars.compile(rawHTML)
-      // const htmlResult = compiledHTML({
-      //   // username,
-      // })
-      // await emailer({
-      //   to: email,
-      //   html: htmlResult,
-      //   subject: "Verify your account",
-      //   text: "Please verify your account",
-      // })
+      const username = otpExist.username
+      const rawHTML = fs.readFileSync("templates/verify_success.html", "utf-8")
+      const compiledHTML = handlebars.compile(rawHTML)
+      const htmlResult = compiledHTML({
+        username,
+      })
+      await emailer({
+        to: email,
+        html: htmlResult,
+        subject: "Activation successful!",
+        text: "Your account has been activated!",
+      })
 
       return res.status(200).json({
         message: "User verified",
@@ -243,16 +251,175 @@ const authController = {
       console.log(err)
     }
   },
-  // loginWithGoogle: async (req, res) => {
-  //   try {
-  //     const { googleToken } = req.body
-  //   const {email} = await verifyGoogleToken(googleToken)
+  loginWithGoogle: async (req, res) => {
+    try {
+      const { googleToken } = req.body
+      const { email } = await verifyGoogleToken(googleToken)
 
-  //     // const {email} = await
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // },
+      const [user] = await User.findOrCreate({
+        where: { email },
+        defaults: {
+          verified: true,
+          username: "New user",
+        },
+      })
+
+      const token = signToken({
+        id: user.id,
+      })
+      console.log(token, "Conbap")
+      return res.status(200).json({
+        message: "User logged In",
+        data: user,
+        token,
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        message: "Error logging in with Google",
+      })
+    }
+  },
+  sentForgetPassword: async (req, res) => {
+    try {
+      const { email } = req.body
+      const emailExist = await User.findOne({
+        where: { email },
+        attributes: ["id", "username"],
+      })
+
+      if (!emailExist) {
+        return res.status(401).json({
+          message: "User not found",
+        })
+      }
+      if (emailExist.password == null && emailExist.verified == true) {
+        return res.status(200).json({
+          message: "Please use sign in with google with this email account",
+        })
+      }
+      const token = signToken({ id: emailExist.id })
+      function generateRandomNumber() {
+        var minm = 10000
+        var maxm = 99999
+        return Math.floor(Math.random() * (maxm - minm + 1)) + minm
+      }
+      const randomIdForgotPassword = generateRandomNumber()
+      function AddMinutesToDate(date, minutes) {
+        return new Date(date.getTime() + minutes * 60 * 1000)
+      }
+      const now = new Date()
+      const expiration_link = AddMinutesToDate(now, 1440)
+
+      const createForgotPasswordId = await db.Forget_Password.create({
+        id_forget: randomIdForgotPassword,
+        UserId: emailExist.id,
+        expiration_link,
+      })
+      const resetLink = `http://localhost:3000/${createForgotPasswordId}`
+
+      // SENDING EMAIL
+      const username = emailExist.username
+      const rawHTML = fs.readFileSync("templates/forgot_password.html", "utf-8")
+      const compiledHTML = handlebars.compile(rawHTML)
+      const htmlResult = compiledHTML({
+        randomIdForgotPassword,
+        resetLink,
+        username,
+      })
+      await emailer({
+        to: email,
+        html: htmlResult,
+        subject: "Reset password",
+        text: "Please reset your password",
+      })
+      return res.status(201).json({
+        message: "Forgot password ID has been created",
+        data: createForgotPasswordId,
+        token: token,
+      })
+    } catch (err) {
+      console.log(err)
+    }
+  },
+  changePassword: async (req, res) => {
+    const currentDate = new Date()
+    try {
+      const findForgotPasswordId = await db.Forget_Password.findOne(
+        {
+          where: {
+            id_forget: req.params.id,
+          },
+        },
+        { include: [User] }
+      )
+      const user = await User.findOne({
+        where: { id: findForgotPasswordId.UserId },
+      })
+      if (!user) {
+        return res.status(400).json({ message: "User not found" })
+      }
+
+      const email = user.email
+      const username = user.username
+      // console.log(email, "try")
+      if (currentDate > findForgotPasswordId.expiration_link) {
+        return res.status(400).json({
+          message: "Your link expired, please ask back for new link",
+        })
+      }
+
+      if (findForgotPasswordId.forgot_success === true) {
+        return res.status(400).json({
+          message: "Your link not applicable ",
+        })
+      }
+      const { password } = req.body
+
+      const hashedPassword = bcrypt.hashSync(password, 5)
+      await User.update(
+        { password: hashedPassword },
+        {
+          where: {
+            id: findForgotPasswordId.UserId,
+          },
+        }
+      )
+      const updatePassword = await db.Forget_Password.update(
+        { forgot_success: true },
+        {
+          where: {
+            id_forget: req.params.id,
+          },
+        }
+      )
+      // SENDING EMAIL
+      const rawHTML = fs.readFileSync(
+        "templates/success_reset_password.html",
+        "utf-8"
+      )
+      const compiledHTML = handlebars.compile(rawHTML)
+      const htmlResult = compiledHTML({
+        username,
+      })
+      await emailer({
+        to: email,
+        html: htmlResult,
+        subject: "Reset password success",
+        text: "Your password has been reset",
+      })
+
+      return res.status(200).json({
+        message: "password updated",
+        data: updatePassword,
+      })
+    } catch (err) {
+      console.log(err)
+      return res.status(500).json({
+        message: "Error to change your password",
+      })
+    }
+  },
 }
 
 module.exports = authController

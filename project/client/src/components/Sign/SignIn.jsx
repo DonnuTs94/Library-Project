@@ -16,33 +16,35 @@ import LockIcon from "@mui/icons-material/Lock"
 import { CheckBox } from "@mui/icons-material"
 import GoogleIcon from "@mui/icons-material/Google"
 import { Link } from "react-router-dom"
+import { useSihnInWithGoogle } from "../../lib/signin/signInGoogle"
 import { useSignInWithEmail } from "../../lib/signin/signInEmail"
 import { useState } from "react"
 import { useEffect } from "react"
 
 const SignIn = () => {
-  const { formik, handleChange, alertMessage2, alertSeverity2, keepUserLogIn } =
-    useSignInWithEmail()
+  const {
+    formik,
+    handleChange,
+    alertMessage2,
+    alertSeverity2,
+    keepUserLogIn,
+    open,
+    setOpen,
+  } = useSignInWithEmail()
+  const { signInWithGoogle } = useSihnInWithGoogle()
   const handleFormSubmit = (event) => {
     event.preventDefault()
     formik.handleSubmit()
   }
-  const [open, setOpen] = useState(false)
-  const handleClick = () => {
-    setOpen(true)
-  }
+  //=====================
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
     }
-
     setOpen(false)
   }
-
-  // useEffect(() => {
-  //   keepUserLogIn()
-  // }, [])
+  //==================
 
   const paperStyle = {
     padding: 20,
@@ -92,14 +94,27 @@ const SignIn = () => {
               variant="contained"
               style={btnstyle}
               fullWidth
-              onClick={handleClick}
             >
               Sign In
             </Button>
           </form>
           {alertMessage2 && (
-            <Snackbar open={open} autoHideDuration={3000} onClose={handleClose}>
-              <Alert severity={alertSeverity2}>
+            <Snackbar
+              open={open}
+              autoHideDuration={3000}
+              onClose={handleClose}
+              sx={{
+                position: "fixed",
+                bottom: "50%",
+                left: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              <Alert
+                severity={alertSeverity2}
+                variant="filled"
+                sx={{ width: "100%", fontWeight: "bold", fontSize: "15px" }}
+              >
                 <AlertTitle>{alertSeverity2}</AlertTitle>
                 {alertMessage2}
               </Alert>
@@ -114,6 +129,7 @@ const SignIn = () => {
             variant="contained"
             style={btnstyle}
             fullWidth
+            onClick={signInWithGoogle}
           >
             <GoogleIcon
               sx={{
@@ -123,7 +139,7 @@ const SignIn = () => {
             Sign In with Google
           </Button>
           <Typography>
-            <Link to={"#"}>Forgot password ?</Link>
+            <Link to={"/forgot-password"}>Forgot password ?</Link>
           </Typography>
           <Typography>
             Do you have an account ?

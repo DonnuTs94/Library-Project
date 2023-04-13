@@ -1,4 +1,5 @@
 import {
+  AlertTitle,
   Avatar,
   Button,
   FormControl,
@@ -27,34 +28,37 @@ const SignUp = () => {
   const [isAvailable, setIsAvailable] = useState(false)
   const navigate = useNavigate()
 
+  const headerStyle = { margin: 0 }
+  const avatarStyle = { backgroundColor: "#1e81b0" }
+  const marginTop = { marginTop: 5 }
   const paperStyle = {
     padding: 20,
-    height: "75vh",
+    height: "50vh",
     width: "40vh",
     margin: "0 auto",
     marginTop: "50px",
   }
-  const headerStyle = { margin: 0 }
-  const avatarStyle = { backgroundColor: "#1e81b0" }
-  const marginTop = { marginTop: 5 }
+  //==============
+  const { formik, handleChange, alertMessage3, alertSeverity3 } =
+    useSignUpFormik()
 
-  const { formik, handleChange, selector } = useSignUpFormik()
-
-  const [showSnackBar, setShowSnackbar] = useState(false)
-
+  const [open, setOpen] = useState(false)
+  const handleClick = () => {
+    setOpen(true)
+  }
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return
     }
-    setShowSnackbar(false)
+
+    setOpen(false)
   }
+  //===================
   const handleFormSubmit = (event) => {
     event.preventDefault()
     formik.handleSubmit()
-    navigate("/confirm-otp")
-
-    setShowSnackbar(true)
   }
+  //=================
 
   return (
     <Grid>
@@ -124,37 +128,47 @@ const SignUp = () => {
               paddingBottom: "10px",
             }}
             onChange={handleChange}
-            name="password"
+            name="confirmPassword"
           />
           <FormControlLabel
             control={<CheckBox name="checkedA" />}
             label="I accept the terms and conditions."
           />
-          {/* <Link to={"/confirm-otp"}> */}
+
           <Button
             type="submit"
             variant="contained"
             color="primary"
-            // props={{ UserContext }}
+            onClick={handleClick}
+            sx={{
+              fontWeight: "bold",
+            }}
           >
             Sign Up
           </Button>
-          {/* </Link> */}
-
+        </form>
+        {alertMessage3 && (
           <Snackbar
-            open={showSnackBar}
-            autoHideDuration={1000}
+            open={open}
+            autoHideDuration={3000}
             onClose={handleClose}
+            sx={{
+              position: "fixed",
+              bottom: "50%",
+              left: "50%",
+              transform: "translateY(-50%)",
+            }}
           >
             <Alert
-              onClose={handleClose}
-              severity="success"
-              sx={{ width: "100%" }}
+              severity={alertSeverity3}
+              sx={{ width: "100%", fontWeight: "bold", fontSize: "15px" }}
+              variant="filled"
             >
-              This is a success message!
+              <AlertTitle>{alertSeverity3}</AlertTitle>
+              {alertMessage3}
             </Alert>
           </Snackbar>
-        </form>
+        )}
       </Paper>
     </Grid>
   )
