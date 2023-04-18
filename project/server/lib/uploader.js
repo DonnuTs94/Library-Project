@@ -2,13 +2,13 @@ const multer = require("multer")
 
 const upload = ({
   filePrefix = "FILE",
-  acceptedFileTypes = ["jpg", "jpeg", "png", "gif"],
-  fileSizeLimit = 5 * 1024 * 1024, // 5 MB
+  acceptedFileTypes = ["jpg", "jpeg", "png"],
+  fileSizeLimit = 3 * 1024 * 1024, // 3 MB
   maxFiles = 3,
 }) => {
   const diskStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-      cb(null, "public")
+      cb(null, "")
     },
     filename: (req, file, cb) => {
       const extension = file.mimetype.split("/")[1]
@@ -27,18 +27,22 @@ const upload = ({
 
   const limits = { fileSize: fileSizeLimit, files: maxFiles }
 
-  //   const errorHandler = (err, req, res, next) => {
-  //     if (err instanceof multer.MulterError) {
-  //       res.status(400).send("File upload error: " + err.message)
-  //     } else {
-  //       res.status(500).send("Unexpected error during file upload")
-  //     }
-  //   }
-
+  const errorHandler = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        res.status(400).send("File upload error: File size is too large")
+      } else {
+        res.status(400).send("File upload error: " + err.message)
+      }
+    } else {
+      res.status(500).send("Unexpected error during file upload")
+    }
+  }
   return multer({
     storage: diskStorage,
     fileFilter,
     limits,
+    onError: errorHandler,
   }).any()
 }
 
